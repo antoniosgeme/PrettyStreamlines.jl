@@ -1,77 +1,153 @@
-# PrettyStreamlines.jl
+## PrettyStreamlines.jl
 
-An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plots of arbitrary density.
-Under the hood it implements the classic Jobard–Lefer algorithm. 
-
----
-
-## Features
-
-* **Grid‑based fields**: supply `u` and `v` as matrices on an `x×y` mesh
-* **Functional fields**: supply `u(x,y)` and `v(x,y)` as functions; they will be sampled on your mesh
-* Configurable **minimum** and **maximum** streamline density
+**An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plots of arbitrary density.** Under the hood it implements the classic Jobard–Lefer algorithm.
 
 ---
 
-## Installation
+### Features
+
+- **Grid‑based fields**: supply `u` and `v` as matrices defined on an `x×y` mesh.
+- **Functional fields**: supply `u(x,y)` and `v(x,y)` as functions; these will be sampled automatically on your mesh.
+- Configurable **minimum** and **maximum** streamline density.
+- Optionally draw **unbroken** streamlines (no collision‐based truncation).
+- Specify **seed points** manually or let the algorithm auto‑place them.
+- Support for **color mapping** by magnitude or arbitrary functions.
+- **Glyphs** (arrows) along each streamline with controllable spacing and scale.
+
+---
+
+### Installation
 
 ```julia
 using Pkg
-Pkg.add("EvenStreamlines")
+Pkg.add("PrettyStreamlines")
 ```
 
----
-
-## Usage
-
+### Quickstart
+The primary user‑facing function is a recipe for streamlines, used like any other Plots.jl series:
 ```julia
-using Plots
-using EvenStreamlines
+using Plots, PrettyStreamlines
+# syntax: streamlines(x, y, u, v; kwargs...)
+streamlines(x, y, u, v;
+    min_density = 1,
+    max_density = 5,
+    color      = :blue,
+    color_by   = :magnitude,    # or a custom function
+    glyphs     = true,
+    arrow_every = 40,
+    arrow_scale = 0.05,
+    unbroken   = false,
+    seeds      = nothing,
+    lw         = 2,
+    cmap       = :autumn,
+    aspect_ratio = :equal,
+    legend     = false)
+
 ```
 
-### 1. Grid‑based fields
-
+### Examples
+## 1) Basic gridded field
 ```julia
-# define a mesh
-x = range(-1,1,length=30)
-y = range(-1,1,length=30)
+x = y = -3:0.01:3
+X = [j for i in y, j in x]
+Y = [i for i in y, j in x]
 
-# simple rotational field: U, V are ny×nx matrices
-U = [ -yj for yj in y, xi in x ]
-V = [  xi for yj in y, xi in x ]
+r = hypot.(X,Y)
+U = -Y .- 0.5 .* X ./ r
+V =  X .- 0.5 .* Y ./ r
 
-# plot with defaults
-streamlines(x, y, U, V)
-
-# customize density and styling
-streamlines(x, y, U, V;
-    min_density = 4,
+streamlines(X, Y, U, V,
+    min_density = 1,
     max_density = 12,
-    lw = 2,
-    c = :blue)
+    color = :blue,
+    aspect_ratio = :equal,
+    xlims = extrema(x),
+    widen  = false,
+    legend = false,
+    framestyle = :box)
 ```
 
-### 3. Functional fields
+## 2) Saddle point colored by magnitude
+```julia
+u(x, y) = x + y
+v(x, y) = x - y
+
+streamlines(x, y, u, v,
+    glyphs    = false,
+    color_by  = :magnitude,
+    xlabel    = "x",
+    ylabel    = "y",
+    aspect_ratio = :equal,
+    xlims     = extrema(x),
+    widen     = false,
+    legend    = false)
+```
+## 3) Nonlinear map colored by custom function
+```julia
+u(x,y) = sin(π*x) * cos(π*y)
+v(x, y) = 0.2 * y
+cf(x,y,u,v) = x
+
+streamlines(x, y, u, v,
+    color_by = cf,
+    xlabel   = "x",
+    ylabel   = "y",
+    aspect_ratio = :equal,
+    xlims    = extrema(x),
+    widen    = false,
+    legend   = false)
+
+```
+
+## 4) Streamlines with arrows
 
 ```julia
-# define continuous vector field
-u_fun(x,y) = sin(pi*x)*cos(pi*y)
-v_fun(x,y) = -cos(pi*x)*sin(pi*y)
+u(x, y) = -y / (x^2 + y^2 + 0.1)
+v(x, y) =  x / (x^2 + y^2 + 0.1)
+cf(x,y,u,v) = u + v
 
-# EvenStreamlines will sample these on your mesh
-streamlines(x, y, u_fun, v_fun;
-    min_density = 3,
-    max_density = 8,
-    lw = 1)
+streamlines(x, y, u, v,
+    color_by    = cf,
+    glyphs      = true,
+    arrow_every = 40,
+    arrow_scale = 0.05,
+    lw          = 2,
+    min_density = 1,
+    max_density = 3,
+    xlabel      = "x",
+    ylabel      = "y",
+    aspect_ratio = :equal,
+    xlims       = extrema(x),
+    widen       = false,
+    legend      = false)
 ```
 
----
 
+## 5) Custom density colormap
+```julia
+u(x, y) = -1 - x^2 + y
+v(x, y) =  1 + x - y^2
+cf(x,y,u,v) = u(x,y)
 
-### References
+streamlines(x, y, u, v,
+    color_by    = cf,
+    cmap        = :autumn,
+    glyphs      = true,
+    arrow_every = 40,
+    arrow_scale = 0.05,
+    lw          = 3,
+    min_density = 2,
+    max_density = 5,
+    xlabel      = "x",
+    ylabel      = "y",
+    xlims       = extrema(x),
+    ylims       = extrema(y),
+    widen       = false,
+    legend      = false)
 
-\[1] Jobard, B., & Lefer, W. (1997). *Creating Evenly‑Spaced Streamlines of Arbitrary Density*. In W. Lefer & M. Grave (Eds.), Visualization in Scientific Computing ’97: Proceedings of the Eurographics Workshop in Boulogne‑sur‑Mer, France, April 28–30, 1997 (pp. 43–55). Vienna: Springer. [https://doi.org/10.1007/978-3-7091-6876-9\_5](https://doi.org/10.1007/978-3-7091-6876-9_5)
+```
 
-\[2] Ma, K. (2025). *Evenly Spaced Streamlines* ([https://github.com/keithfma/evenly\_spaced\_streamlines](https://github.com/keithfma/evenly_spaced_streamlines)). GitHub. Retrieved July 25, 2025.
+## References
+ - Jobard, B., & Lefer, W. (1997). Creating Evenly‑Spaced Streamlines of Arbitrary Density. In Visualization in Scientific Computing ’97 (pp. 43–55). Springer. https://doi.org/10.1007/978-3-7091-6876-9_5
 
-\[3] keithfma. (2025). *evenly\_spaced\_streamlines* ([https://github.com/keithfma/evenly\_spaced\_streamlines](https://github.com/keithfma/evenly_spaced_streamlines)). GitHub. Retrieved July 25, 2025.
+ - Ma, K. (2025). Evenly Spaced Streamlines (https://github.com/keithfma/evenly_spaced_streamlines). GitHub. 

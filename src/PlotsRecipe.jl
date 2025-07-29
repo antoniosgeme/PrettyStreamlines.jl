@@ -9,24 +9,18 @@ using RecipesBase
                   arrow_every   = 10,
                   arrow_scale   = 0.1,
                   color         = :black,      # fixed color
-                  color_by      = nothing      # :magnitude or Function
+                  color_by      = nothing,      # :magnitude or Function
+                  unbroken      = false,
+                  seeds         = nothing
 )
-    x_arg, y_arg, u_arg, v_arg = streams.args
-
-    if isa(u_arg, AbstractMatrix) && isa(v_arg, AbstractMatrix)
-        x, y, U, V = x_arg, y_arg, u_arg, v_arg
-
-    elseif isa(u_arg, Function) && isa(v_arg, Function)
-        x, y = x_arg, y_arg
-        U = [ u_arg(xi, yj) for yj in y, xi in x ]
-        V = [ v_arg(xi, yj) for yj in y, xi in x ]
-
-    else
-        throw(ArgumentError("Streamlines: u,v must be Matrices or Functions"))
-    end
+    x, y, u, v = streams.args
+    X,Y,U,V = process_stream_fields(x,y,u,v)
 
     # --- trace streamlines ---
-    xy = get_streamlines(x, y, U, V; min_density, max_density)
+    xy = get_streamlines(x, y, u, v; min_density=min_density, 
+                                     max_density=max_density,
+                                     unbroken=unbroken,
+                                     seeds=seeds)
 
     # --- prepare quiver arrows ---
     valid = .!isnan.(xy[:,1])
@@ -89,7 +83,6 @@ using RecipesBase
     @series begin
         if has_map
             line_z := cvals
-            color  := nothing       # let colormap handle it
         else
             color  := color         # fixed
         end
