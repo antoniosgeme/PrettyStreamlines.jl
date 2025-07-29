@@ -1,6 +1,6 @@
 ## PrettyStreamlines.jl
 
-**An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plots of arbitrary density.** Under the hood it implements the classic Jobard–Lefer algorithm.
+An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plots of arbitrary density. Under the hood it implements the classic Jobard–Lefer algorithm.
 
 ---
 
@@ -67,6 +67,8 @@ streamlines(X, Y, U, V,
     framestyle = :box)
 ```
 
+![image](assets/ex1.png)
+
 #### 2) Saddle point colored by magnitude
 ```julia
 u(x, y) = x + y
@@ -81,6 +83,9 @@ streamlines(x, y, u, v,
     legend    = false,
     framestyle = :box)
 ```
+
+![image](assets/ex2.png)
+
 #### 3) Nonlinear map colored by custom function
 ```julia
 u(x,y) = sin(π*x) * cos(π*y)
@@ -96,6 +101,7 @@ streamlines(x, y, u, v,
     framestyle = :box)
 
 ```
+![image](assets/ex3.png)
 
 #### 4) Streamlines with arrows
 
@@ -118,6 +124,7 @@ streamlines(x, y, u, v,
     legend      = false,
     framestyle = :box)
 ```
+![image](assets/ex4.png)
 
 
 #### 5) Custom density colormap
@@ -142,6 +149,8 @@ streamlines(x, y, u, v,
     framestyle = :box)
 
 ```
+![image](assets/ex5.png)
+
 
 #### References
  - Jobard, B., & Lefer, W. (1997). Creating Evenly‑Spaced Streamlines of Arbitrary Density. In Visualization in Scientific Computing ’97 (pp. 43–55). Springer. https://doi.org/10.1007/978-3-7091-6876-9_5
