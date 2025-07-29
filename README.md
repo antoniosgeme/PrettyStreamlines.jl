@@ -46,7 +46,7 @@ streamlines(x, y, u, v;
 ```
 
 ### Examples
-## 1) Basic gridded field
+#### 1) Basic gridded field
 ```julia
 x = y = -3:0.01:3
 X = [j for i in y, j in x]
@@ -67,7 +67,7 @@ streamlines(X, Y, U, V,
     framestyle = :box)
 ```
 
-## 2) Saddle point colored by magnitude
+#### 2) Saddle point colored by magnitude
 ```julia
 u(x, y) = x + y
 v(x, y) = x - y
@@ -75,14 +75,13 @@ v(x, y) = x - y
 streamlines(x, y, u, v,
     glyphs    = false,
     color_by  = :magnitude,
-    xlabel    = "x",
-    ylabel    = "y",
     aspect_ratio = :equal,
     xlims     = extrema(x),
     widen     = false,
-    legend    = false)
+    legend    = false,
+    framestyle = :box)
 ```
-## 3) Nonlinear map colored by custom function
+#### 3) Nonlinear map colored by custom function
 ```julia
 u(x,y) = sin(π*x) * cos(π*y)
 v(x, y) = 0.2 * y
@@ -90,16 +89,15 @@ cf(x,y,u,v) = x
 
 streamlines(x, y, u, v,
     color_by = cf,
-    xlabel   = "x",
-    ylabel   = "y",
     aspect_ratio = :equal,
     xlims    = extrema(x),
     widen    = false,
-    legend   = false)
+    legend   = false,
+    framestyle = :box)
 
 ```
 
-## 4) Streamlines with arrows
+#### 4) Streamlines with arrows
 
 ```julia
 u(x, y) = -y / (x^2 + y^2 + 0.1)
@@ -114,20 +112,19 @@ streamlines(x, y, u, v,
     lw          = 2,
     min_density = 1,
     max_density = 3,
-    xlabel      = "x",
-    ylabel      = "y",
     aspect_ratio = :equal,
     xlims       = extrema(x),
     widen       = false,
-    legend      = false)
+    legend      = false,
+    framestyle = :box)
 ```
 
 
-## 5) Custom density colormap
+#### 5) Custom density colormap
 ```julia
 u(x, y) = -1 - x^2 + y
 v(x, y) =  1 + x - y^2
-cf(x,y,u,v) = u(x,y)
+cf(x,y,uu,vv) = u(x,y)
 
 streamlines(x, y, u, v,
     color_by    = cf,
@@ -138,16 +135,15 @@ streamlines(x, y, u, v,
     lw          = 3,
     min_density = 2,
     max_density = 5,
-    xlabel      = "x",
-    ylabel      = "y",
     xlims       = extrema(x),
     ylims       = extrema(y),
     widen       = false,
-    legend      = false)
+    legend      = false,
+    framestyle = :box)
 
 ```
 
-## References
+#### References
  - Jobard, B., & Lefer, W. (1997). Creating Evenly‑Spaced Streamlines of Arbitrary Density. In Visualization in Scientific Computing ’97 (pp. 43–55). Springer. https://doi.org/10.1007/978-3-7091-6876-9_5
 
  - Ma, K. (2025). Evenly Spaced Streamlines (https://github.com/keithfma/evenly_spaced_streamlines). GitHub. 
