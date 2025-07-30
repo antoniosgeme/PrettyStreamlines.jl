@@ -20,10 +20,10 @@ An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plot
 ---
 
 ### Installation
-
+The package is not currenlty registered and can be installed from this repisotory as
 ```julia
 using Pkg
-Pkg.add("PrettyStreamlines")
+Pkg.add("https://github.com/antoniosgeme/PrettyStreamlines.jl.git")
 ```
 
 ### Quickstart
@@ -65,6 +65,7 @@ streamlines(X, Y, U, V,
     min_density = 1,
     max_density = 12,
     color = :blue,
+    lw=2
     )
 ```
 

@@ -86,7 +86,7 @@ function trace(
         verts[n,1], verts[n,2] = x, y
     end
 
-    return @view verts[1:n, :]
+    return verts[1:n, :]
 end
 
 function streamRK2(
@@ -148,7 +148,7 @@ function streamRK2(
         
         for i in 1:size(v,1)
             if isnan(v[i,1]) || isnan(v[i,2])
-                v = @view v[1:i-1, :]
+                v = v[1:i-1, :]
                 break
             end
         end
@@ -167,11 +167,11 @@ function streamRK2(
             rr_e = floor(Int, (yc - ymin)*iyrangere) + 1
 
             if cc_e < 1 || cc_e > ncend || rr_e < 1 || rr_e > nrend
-                return @view v[1:j, :]
+                return v[1:j, :]
             end
 
             if !unbroken && endgrid[rr_e, cc_e] && !(cc_e==tcc && rr_e==trr)
-                return @view v[1:j, :]
+                return v[1:j, :]
             end
 
             endgrid[rr_e, cc_e] = true
@@ -208,8 +208,10 @@ function streamRK2(
                 full_line = vcat(second_half, first_half)
                 vo = trim_path(full_line,true)
             end 
-            push!(vertsout, vo)
-            push!(vertsout, [NaN NaN])
+            if size(vo,1) > 2
+                push!(vertsout, vo)
+                push!(vertsout, [NaN NaN])
+            end 
 
         end # if startgrid
     end # end idx
@@ -280,7 +282,7 @@ function get_streamlines(xx, yy, uu, vv;
     
     X,Y,U,V = process_stream_fields(xx,yy,uu,vv)
     @assert size(X) == size(Y) == size(U) == size(V)
-    @assert min_density > 0 && max_density > 0
+    @assert min_density > 0 && max_density > 0 && max_density > min_density
 
     seeds = normalize_seeds(seeds)
 
