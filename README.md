@@ -1,6 +1,8 @@
-## PrettyStreamlines.jl
 
-![image](assets/logo.png)
+<h2 align="center">PrettyStreamlines.jl</h2>
+<p align="center">
+  <img src="assets/logo.png" alt="ex1" width="400">
+</p>
 
 An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plots of arbitrary density. Under the hood it implements the classic Jobard–Lefer algorithm.
 
@@ -68,8 +70,9 @@ streamlines(X, Y, U, V,
     lw=2
     )
 ```
-
-![image](assets/ex1.png)
+<p align="center">
+  <img src="assets/ex1.png" alt="ex1" width="400">
+</p>
 
 #### 2) Saddle point colored by magnitude
 ```julia
@@ -83,7 +86,9 @@ streamlines(x, y, u, v,
     max_density = 5)
 ```
 
-![image](assets/ex2.png)
+<p align="center">
+  <img src="assets/ex2.png" alt="ex2" width="400">
+</p>
 
 #### 3) Nonlinear map colored by custom function
 ```julia
@@ -97,8 +102,9 @@ streamlines(x, y, u, v,
     max_density=10)
 
 ```
-![image](assets/ex3.png)
-
+<p align="center">
+  <img src="assets/ex3.png" alt="ex2" width="400">
+</p>
 #### 4) Streamlines with arrows
 
 ```julia
@@ -116,8 +122,9 @@ streamlines(x, y, u, v,
     max_density = 3,
     )
 ```
-![image](assets/ex4.png)
-
+<p align="center">
+  <img src="assets/ex4.png" alt="ex2" width="400">
+</p>
 
 #### 5) Masked data
 ```julia
@@ -131,8 +138,9 @@ streamlines(x, y, u, v,
     max_density = 10,
     lw=2)
 ```
-![image](assets/ex5.png)
-
+<p align="center">
+  <img src="assets/ex5.png" alt="ex2" width="400">
+</p>
 
 #### 6) Streamlines from seed points
 ```julia
@@ -146,8 +154,12 @@ streamlines(x, y, u, v,
             color_by=:magnitude,
             lw=2)
 scatter!(seeds[:,1],seeds[:,2],ms=5)
+
 ```
 
+<p align="center">
+  <img src="assets/ex6.png" alt="ex2" width="400">
+</p>
 #### References
  - Jobard, B., & Lefer, W. (1997). Creating Evenly‑Spaced Streamlines of Arbitrary Density. In Visualization in Scientific Computing ’97 (pp. 43–55). Springer. https://doi.org/10.1007/978-3-7091-6876-9_5
 
