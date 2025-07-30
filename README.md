@@ -59,12 +59,12 @@ r = hypot.(X,Y)
 U = -Y .- 0.5 .* X ./ r
 V =  X .- 0.5 .* Y ./ r
 
-default(aspect_ratio = :equal,legend=false,framestyle = :box, widen  = false, xlims = extrema(x))
+default(aspect_ratio = :equal,legend=false,framestyle = :box, widen  = false, xlims = extrema(x),size=(600,600),dpi=600)
 
 streamlines(X, Y, U, V,
     min_density = 1,
     max_density = 12,
-    color = :blue,
+    color = :green,
     lw=2
     )
 ```
@@ -77,6 +77,7 @@ u(x, y) = x + y
 v(x, y) = x - y
 
 streamlines(x, y, u, v,
+    lw=2,
     color_by  = :magnitude,
     min_density = 2,
     max_density = 5)
@@ -91,7 +92,9 @@ v(x, y) = 0.2 * y
 cf(x,y,u,v) = x
 
 streamlines(x, y, u, v,
-    color_by = cf)
+    color_by = cf,lw=2,
+    min_density=2,
+    max_density=10)
 
 ```
 ![image](assets/ex3.png)
@@ -121,11 +124,29 @@ streamlines(x, y, u, v,
 u(x, y) = (x+1)^2 + y^2 < 1 ? NaN : x + y
 v(x, y) = (x+1)^2 + y^2 < 1 ? NaN : x - y
 
+
 streamlines(x, y, u, v,
     color_by  = :magnitude,
     min_density = 5,
-    max_density = 20)
+    max_density = 10,
+    lw=2)
+```
+![image](assets/ex5.png)
 
+
+#### 6) Streamlines from seed points
+```julia
+u(x,y) = -1 - x^2 + y
+v(x, y) = 1 + x - y^2
+
+seeds = hcat(zeros(10).-0.5,LinRange(-2,2...,10))
+
+streamlines(x, y, u, v,
+            seeds=seeds,
+            color_by=:magnitude,
+            lw=2)
+scatter!(seeds[:,1],seeds[:,2],ms=5)
+```
 
 #### References
  - Jobard, B., & Lefer, W. (1997). Creating Evenly‑Spaced Streamlines of Arbitrary Density. In Visualization in Scientific Computing ’97 (pp. 43–55). Springer. https://doi.org/10.1007/978-3-7091-6876-9_5
