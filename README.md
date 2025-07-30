@@ -10,14 +10,14 @@ An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plot
 
 ### Features
 
-- **Grid‑based fields**: supply `u` and `v` as matrices defined on an `x×y` mesh.
+- **Grid‑based fields**: supply `u` and `v` as $Ny \times Nx$ matrices on a mesh.
 - **Functional fields**: supply `u(x,y)` and `v(x,y)` as functions; these will be sampled automatically on your mesh.
 - Configurable **minimum** and **maximum** streamline density.
 - Optionally draw **unbroken** streamlines (no collision‐based truncation).
 - Specify **seed points** manually or let the algorithm auto‑place them.
 - Support for **color mapping** by magnitude or arbitrary functions.
 - **Glyphs** (arrows) along each streamline with controllable spacing and scale.
-- Support of masking of vector fields
+- Support for **masking** of vector fields
 
 ---
 
@@ -29,26 +29,26 @@ Pkg.add("https://github.com/antoniosgeme/PrettyStreamlines.jl.git")
 ```
 
 ### Quickstart
-The primary user‑facing function is a recipe for streamlines, used like any other Plots.jl series:
+The primary user‑facing function is a recipe for streamlines, used like any other Plots.jl series, and exposed the following additional keyword arguments:
 ```julia
 using Plots, PrettyStreamlines
 # syntax: streamlines(x, y, u, v; kwargs...)
 streamlines(x, y, u, v;
     min_density = 1,
-    max_density = 5,
-    color      = :blue,
-    color_by   = :magnitude,    # or a custom function
+    max_density = 5,,
+    color_by   = f(x,y,u,v),    # arbitrary function 
     glyphs     = true,
     arrow_every = 40,
     arrow_scale = 0.05,
     unbroken   = false,
-    seeds      = nothing,
-    lw         = 2,
-    cmap       = :autumn,
-    aspect_ratio = :equal,
-    legend     = false)
+    seeds      = nothing)
 
+# Or directly retrieve streamline coordinates and plot
+xy = get_streamlines(x, y, u, v) 
+plot(xy[:,1], xy[:,2])
 ```
+
+
 
 ### Examples
 #### 1) Basic gridded field
@@ -160,6 +160,7 @@ scatter!(seeds[:,1],seeds[:,2],ms=5)
 <p align="center">
   <img src="assets/ex6.png" alt="ex2" width="400">
 </p>
+
 #### References
  - Jobard, B., & Lefer, W. (1997). Creating Evenly‑Spaced Streamlines of Arbitrary Density. In Visualization in Scientific Computing ’97 (pp. 43–55). Springer. https://doi.org/10.1007/978-3-7091-6876-9_5
 
