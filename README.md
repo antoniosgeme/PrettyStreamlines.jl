@@ -1,7 +1,7 @@
 
 <h2 align="center">PrettyStreamlines.jl</h2>
 <p align="center">
-  <img src="assets/logo.png" alt="ex1" width="400">
+  <img src="assets/logo.png" alt="ex1" width="600">
 </p>
 
 An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plots of arbitrary density. Under the hood it implements the classic Jobard–Lefer algorithm.
