@@ -1,14 +1,4 @@
 
-
-
-"""
-    rect_exit(xmin, xmax, ymin, ymax, x0, y0, x1, y1)
-
-Given a rectangle [xmin,xmax]×[ymin,ymax], a start point (x0,y0) guaranteed inside,
-and an end point (x1,y1) guaranteed outside, returns the exit point (xi,yi)
-where the segment from (x0,y0) to (x1,y1) first intersects the rectangle boundary.
-
-"""
 @inline function rect_exit(xmin::T, xmax::T, ymin::T, ymax::T,
                            x0::T, y0::T, x1::T, y1::T) where T<:Real
     dx = x1 - x0

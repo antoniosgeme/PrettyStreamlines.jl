@@ -56,15 +56,13 @@ r = hypot.(X,Y)
 U = -Y .- 0.5 .* X ./ r
 V =  X .- 0.5 .* Y ./ r
 
+default(aspect_ratio = :equal,legend=false,framestyle = :box, widen  = false, xlims = extrema(x))
+
 streamlines(X, Y, U, V,
     min_density = 1,
     max_density = 12,
     color = :blue,
-    aspect_ratio = :equal,
-    xlims = extrema(x),
-    widen  = false,
-    legend = false,
-    framestyle = :box)
+    )
 ```
 
 ![image](assets/ex1.png)
@@ -75,13 +73,9 @@ u(x, y) = x + y
 v(x, y) = x - y
 
 streamlines(x, y, u, v,
-    glyphs    = false,
     color_by  = :magnitude,
-    aspect_ratio = :equal,
-    xlims     = extrema(x),
-    widen     = false,
-    legend    = false,
-    framestyle = :box)
+    min_density = 2,
+    max_density = 5)
 ```
 
 ![image](assets/ex2.png)
@@ -93,12 +87,7 @@ v(x, y) = 0.2 * y
 cf(x,y,u,v) = x
 
 streamlines(x, y, u, v,
-    color_by = cf,
-    aspect_ratio = :equal,
-    xlims    = extrema(x),
-    widen    = false,
-    legend   = false,
-    framestyle = :box)
+    color_by = cf)
 
 ```
 ![image](assets/ex3.png)
@@ -118,38 +107,20 @@ streamlines(x, y, u, v,
     lw          = 2,
     min_density = 1,
     max_density = 3,
-    aspect_ratio = :equal,
-    xlims       = extrema(x),
-    widen       = false,
-    legend      = false,
-    framestyle = :box)
+    )
 ```
 ![image](assets/ex4.png)
 
 
-#### 5) Custom density colormap
+#### 5) Masked data
 ```julia
-u(x, y) = -1 - x^2 + y
-v(x, y) =  1 + x - y^2
-cf(x,y,uu,vv) = u(x,y)
+u(x, y) = (x+1)^2 + y^2 < 1 ? NaN : x + y
+v(x, y) = (x+1)^2 + y^2 < 1 ? NaN : x - y
 
 streamlines(x, y, u, v,
-    color_by    = cf,
-    cmap        = :autumn,
-    glyphs      = true,
-    arrow_every = 40,
-    arrow_scale = 0.05,
-    lw          = 3,
-    min_density = 2,
-    max_density = 5,
-    xlims       = extrema(x),
-    ylims       = extrema(y),
-    widen       = false,
-    legend      = false,
-    framestyle = :box)
-
-```
-![image](assets/ex5.png)
+    color_by  = :magnitude,
+    min_density = 5,
+    max_density = 20)
 
 
 #### References

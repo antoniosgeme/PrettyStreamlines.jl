@@ -1,5 +1,48 @@
 using RecipesBase
 
+"""
+`streamlines(xs, ys, u, v; kwargs...)` — Plot evenly-spaced streamlines of a 2D vector field.
+
+# Arguments
+- `xs, ys`  
+  1D coordinate vectors or 2D meshgrid matrices defining the domain.
+- `u, v`  
+  Velocity components: either arrays matching `(xs, ys)` or functions `u(x,y)` and `v(x,y)`.
+
+# Keywords
+- `min_density::Real = 3`  
+  Minimum streamline density (controls spacing of start points).
+- `max_density::Real = 10`  
+  Maximum streamline density.
+- `glyphs::Bool = false`  
+  If `true`, draw arrow glyphs along each streamline.
+- `arrow_every::Int = 10`  
+  Place an arrow on every Nth segment when `glyphs=true`.
+- `arrow_scale::Real = 0.1`  
+  Scale factor for arrow length.
+- `color`  
+  Fixed line color (e.g. `:black`), ignored if `color_by` is set.
+- `color_by`  
+  Either `:magnitude` or a function `f(x,y,u,v)` returning a value to map to color.
+- `unbroken::Bool = false`  
+  If `true`, do not truncate lines upon collision with existing streamlines.
+- `seeds = nothing`  
+  Optional seed points as a `Vector{Tuple{T,T}}` or an `N×2` matrix; if `nothing`, seeds are auto-generated.
+
+# Examples
+
+1. Basic usage with functions:
+```jldoctest
+julia> using Plots, PrettyStreamlines
+
+julia> xs = LinRange(-1,1,50); ys = LinRange(-1,1,50)
+julia> u(x,y) = -y;  v(x,y) = x
+julia> plot(Streamlines(xs, ys, u, v;
+                        min_density=2,
+                        max_density=8,
+                        color=:blue))
+```
+"""
 @userplot Streamlines
 
 @recipe function f(streams::Streamlines;
@@ -49,6 +92,39 @@ using RecipesBase
     # --- decide if we’re color‐mapping ---
     has_map = false
     color_fn = nothing
+
+    if color_by isa AbstractVector
+        @assert length(color_by) == size(xy,1) "color_by array must match total points"
+        has_map = true
+        cvals   = color_by
+
+    elseif color_by === :magnitude
+        has_map = true
+        cvals = similar(xy[:,1])
+        for (i,(xi, yi)) in enumerate(eachrow(xy))
+            if isnan(xi)
+                cvals[i] = NaN
+            else
+                ix = argmin(abs.(x .- xi))
+                iy = argmin(abs.(y .- yi))
+                cvals[i] = hypot(U[iy,ix], V[iy,ix])
+            end
+        end
+
+    elseif color_by isa Function
+        has_map = true
+        cvals = similar(xy[:,1])
+        for (i,(xi, yi)) in enumerate(eachrow(xy))
+            if isnan(xi)
+                cvals[i] = NaN
+            else
+                ix = argmin(abs.(x .- xi))
+                iy = argmin(abs.(y .- yi))
+                cvals[i] = color_by(xi, yi, U[iy,ix], V[iy,ix])
+            end
+        end
+    end
+
 
     if color_by === :magnitude
         has_map = true
