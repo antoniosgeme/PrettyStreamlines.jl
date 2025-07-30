@@ -1,5 +1,7 @@
 ## PrettyStreamlines.jl
 
+![image](assets/logo.png)
+
 An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plots of arbitrary density. Under the hood it implements the classic Jobard–Lefer algorithm.
 
 ---
@@ -13,6 +15,7 @@ An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plot
 - Specify **seed points** manually or let the algorithm auto‑place them.
 - Support for **color mapping** by magnitude or arbitrary functions.
 - **Glyphs** (arrows) along each streamline with controllable spacing and scale.
+- Support of masking of vector fields
 
 ---
 
