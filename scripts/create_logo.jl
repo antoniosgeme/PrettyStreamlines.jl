@@ -15,13 +15,11 @@ X = [i for j in y, i in x]
 Y = [j for j in y, i in x]
 Z = @. X + im * Y
 
-V_inf = 1.0                     # freestream speed
-a     = 3/4                     # cylinder radi
-Γ     = [0.0, -0.0, 0.0]        # vortex strengths
-
-α   = -π/2                      # freestream angle
-zc  = xc .+ im .* yc            # comlpex cylinder centers
-w   = V_inf * exp(-im*α) .* ones(size(Z))        # start with uniform flow
+V_inf = 1.0                     
+a     = 3/4                 
+α   = -π/2                      
+zc  = xc .+ im .* yc         
+w   = V_inf * exp(-im*α) .* ones(size(Z))     
 
 for i in eachindex(zc)
     z0 = zc[i]
@@ -29,16 +27,6 @@ for i in eachindex(zc)
     Z[inside] .= NaN
     w .= w .- V_inf * a^2 * exp(im*α) ./ (Z .- z0).^2
     w .= w .- im*Γ[i] ./ (2π*(Z .- z0))
-    #= for j in eachindex(zc)
-        if j == i
-            continue
-        end
-        # location of vortex j
-        z_vj    = zc[j]
-        # inversion in cylinder i
-        z_image = z0 + a^2/ conj(z_vj - z0)
-        w .=  .+ im*Γ[j] ./ (2π*(Z .- z_image))
-    end =#
 end
 
 U = real.(w)
