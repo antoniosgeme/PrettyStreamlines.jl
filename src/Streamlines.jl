@@ -277,8 +277,8 @@ function get_streamlines(xx, yy, uu, vv;
                         min_density::Real = 1.0,
                         max_density::Real = 5.0,
                         unbroken::Bool = false,
-                        seeds::Union{Nothing, Vector{Tuple{T,T}}, AbstractMatrix{T}} = nothing
-                        ) where T<:Real
+                        seeds::Union{Nothing, Vector{Tuple{<:Real,<:Real}}, AbstractMatrix{<:Real}} = nothing
+                        )
     
     X,Y,U,V = process_stream_fields(xx,yy,uu,vv)
     @assert size(X) == size(Y) == size(U) == size(V)
