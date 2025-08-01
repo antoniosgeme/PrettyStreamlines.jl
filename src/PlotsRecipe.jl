@@ -7,7 +7,7 @@ using RecipesBase
 - `xs, ys`  
   1D coordinate vectors or 2D meshgrid matrices defining the domain.
 - `u, v`  
-  Velocity components: either arrays matching `(xs, ys)` or functions `u(x,y)` and `v(x,y)`.
+  Velocity components: either Matrices of size `(Ny x Nx)` or functions `u(x,y)` and `v(x,y)`.
 
 # Keywords
 - `min_density::Real = 3`  
@@ -35,13 +35,12 @@ using RecipesBase
 ```jldoctest
 julia> using Plots, PrettyStreamlines
 
-julia> xs = LinRange(-1,1,50); ys = LinRange(-1,1,50)
-julia> u(x,y) = -y;  v(x,y) = x
-julia> plot(Streamlines(xs, ys, u, v;
-                        min_density=2,
-                        max_density=8,
-                        color=:blue))
-```
+julia> x = LinRange(-1,1,50)
+julia> y = LinRange(-1,1,50)
+julia> u(x,y) = -y  
+julia> v(x,y) = x
+julia> streamlines(x, y, u, v; min_density=2, max_density=8, color=:blue))
+```                    
 """
 @userplot Streamlines
 
@@ -60,7 +59,7 @@ julia> plot(Streamlines(xs, ys, u, v;
     X,Y,U,V = process_stream_fields(x,y,u,v)
 
     # --- trace streamlines ---
-    xy = get_streamlines(x, y, u, v; min_density=min_density, 
+    xy = compute_streamlines(x, y, u, v; min_density=min_density, 
                                      max_density=max_density,
                                      unbroken=unbroken,
                                      seeds=seeds)

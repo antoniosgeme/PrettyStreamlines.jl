@@ -8,7 +8,7 @@ using Statistics
     V = fill(0.0, length(y), length(x))
 
     
-    streams = get_streamlines(x, y, U, V)
+    streams = compute_streamlines(x, y, U, V)
     @test !isempty(streams) 
 
     br = vcat(0,findall(isnan.(streams[:,1])))
@@ -28,7 +28,7 @@ end
     U = -Y
     V = X
 
-    streams = get_streamlines(x, y, U, V)
+    streams = compute_streamlines(x, y, U, V)
     br = vcat(0,findall(isnan.(streams[:,1])))
 
     radii = zeros(length(br)-1)
@@ -51,7 +51,7 @@ end
 
     rc = [0.5,0.25]
     seed = [(rc[1], 0.0),(0.0,rc[2])]
-    streams = get_streamlines(x, y, U, V; seeds=seed)
+    streams = compute_streamlines(x, y, U, V; seeds=seed)
     @test !isempty(streams)
     br = vcat(0,findall(isnan.(streams[:,1])))
 

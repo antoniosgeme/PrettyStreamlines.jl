@@ -44,7 +44,7 @@ streamlines(x, y, u, v;
     seeds      = nothing)
 
 # Or directly retrieve streamline coordinates and plot
-xy = get_streamlines(x, y, u, v) 
+xy = compute_streamlines(x, y, u, v) 
 plot(xy[:,1], xy[:,2])
 ```
 

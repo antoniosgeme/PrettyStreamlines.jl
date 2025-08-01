@@ -223,61 +223,51 @@ function streamRK2(
 end 
 
 
-
 """
-    get_streamlines(
-        xx, yy, uu, vv;
-        min_density::Real = 1.0,
-        max_density::Real = 5.0,
-        unbroken::Bool = false,
-        seeds::Union{Nothing, Vector{Tuple{T,T}}, AbstractMatrix{T}} = nothing
-    ) where T<:Real
+`compute_streamlines(xs, ys, u, v; kwargs...)` — Compute the raw streamline paths of a 2D vector field.
 
-Compute evenly‐spaced streamlines for the vector field `(uu, vv)` over the grid `(xx, yy)`.
+This returns the underlying streamline geometry (not plotted). Streamlines are concatenated into an `Mx2` array of [x, y] coordinates with `NaN` rows separating individual streamline segments.
 
 # Arguments
-- `xx, yy` : Either  
-  - 1D coordinate vectors of length N (for x) and M (for y), or  
-  - 2D matrices of size M×N defining a meshgrid.  
-- `uu, vv` : Either  
-  - M×N arrays of velocity components matching `(xx, yy)`, or  
-  - Functions `uu(x,y)` and `vv(x,y)` that will be evaluated on the grid.
+- `xs, ys`  
+  1D coordinate vectors or 2D meshgrid matrices defining the domain.
+- `u, v`  
+  Velocity components: either matrices of size `(Ny x Nx)` or functions `u(x,y)` and `v(x,y)`.
 
-# Keyword Arguments
-- `min_density::Real = 1.0`  
-  Minimum streamline density (controls starting point spacing).
-- `max_density::Real = 5.0`  
+# Keywords
+- `min_density::Real = 3`  
+  Minimum streamline density (controls spacing of seed/start points).
+- `max_density::Real = 10`  
   Maximum streamline density.
 - `unbroken::Bool = false`  
-  If `true`, do not truncate streamlines upon collision with other lines.
-- `seeds::Union{Nothing, Vector{Tuple{T,T}}, AbstractMatrix{T}} = nothing`  
-  Optional user‐provided seed points.  
-  - As a vector of `(x, y)` tuples, or  
-  - As an N×2 matrix of coordinates.  
-  If `nothing`, seeds are auto‑generated according to `min_density`.
+  If `true`, do not truncate lines upon collision with existing streamlines; otherwise streamlines terminate to enforce spacing.
+- `seeds = nothing`  
+  Optional seed points. Can be a `Vector{Tuple{T,T}}` or an `Nx2` matrix of starting [x,y] locations. If `nothing`, seeds are auto-generated based on density parameters.
 
 # Returns
-A 2‑column `Matrix{Float64}` of concatenated `(x, y)` points for all streamlines,
-with `NaN` rows separating individual lines.
+- `paths::Matrix{Float64}`  
+  Concatenated streamline coordinates; each contiguous segment is a streamline, and segments are separated by rows containing `NaN`. You can split them by finding `NaN` sentinel rows.
 
 # Examples
-```julia
-# Using grid vectors and array‐defined field:
-xs = LinRange(0, 1, 20)
-ys = LinRange(0, 1, 20)
-u = (x,y) -> -y
-v = (x,y) -> x
-xy = get_streamlines(xs, ys, u, v; min_density=1, max_density=5.0)
 
-# Using explicit seed points:
-seeds = [ (0.1, 0.1), (0.5, 0.5), (0.9, 0.2) ]
-xy2 = get_streamlines(xs, ys, u, v; seeds=seeds, unbroken=true)
+Basic circular field (should produce circular streamlines):
+
+```jldoctest
+
+julia> x = LinRange(-1,1,100)
+julia> y = LinRange(-1,1,100)
+julia> u(x,y) = -y
+julia> v(x,y) = x
+julia> paths = compute_streamlines(x, y, u, v; min_density=4, max_density=8)
+julia> seed = [(0.5, 0.0), (0.0, 0.25)]
+julia> paths = compute_streamlines(x, y, u, v; seeds=seed)
+```
 """
-function get_streamlines(xx, yy, uu, vv;
+function compute_streamlines(xx, yy, uu, vv;
                         min_density::Real = 1.0,
                         max_density::Real = 5.0,
                         unbroken::Bool = false,
-                        seeds::Union{Nothing, Vector{Tuple{<:Real,<:Real}}, AbstractMatrix{<:Real}} = nothing
+                        seeds::Union{Nothing, Vector{<:Tuple{<:Real,<:Real}}, AbstractMatrix{<:Real}} = nothing
                         )
     
     X,Y,U,V = process_stream_fields(xx,yy,uu,vv)
