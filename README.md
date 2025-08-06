@@ -10,7 +10,7 @@ An extension to the Plots.jl ecosystem providing evenly‑spaced streamline plot
 
 ### Features
 
-- **Grid‑based fields**: supply `u` and `v` as $Ny \times Nx$ matrices on a mesh.
+- **Grid‑based fields**: supply `u` and `v` as $N_y \times N_x$ matrices on a mesh.
 - **Functional fields**: supply `u(x,y)` and `v(x,y)` as functions; these will be sampled automatically on your mesh.
 - Configurable **minimum** and **maximum** streamline density.
 - Optionally draw **unbroken** streamlines (no collision‐based truncation).
@@ -147,7 +147,8 @@ streamlines(x, y, u, v,
 u(x,y) = -1 - x^2 + y
 v(x, y) = 1 + x - y^2
 
-seeds = hcat(zeros(10).-0.5,LinRange(-2,2...,10))
+seeds = hcat(zeros(10).-0.5,LinRange(-2,2...,10)) # Nx2 Matrix
+# or seeds = [(x,y) for (x,y) in zip(zeros(10).-0.5,LinRange(-2,2...,10))] # Vector{Tuple{T,T}}
 
 streamlines(x, y, u, v,
             seeds=seeds,
